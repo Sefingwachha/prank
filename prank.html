@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>System Update Required</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE ACCESS PROTOCOL</title>
     <style>
         * {
             margin: 0;
@@ -12,479 +11,641 @@
             box-sizing: border-box;
         }
         
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;700&display=swap');
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #000;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
             overflow-x: hidden;
+            cursor: default;
         }
         
-        .qr-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .qr-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .qr-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .qr-subtitle {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 25px;
-        }
-        
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .instructions {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 13px;
-            color: #856404;
-            text-align: left;
-        }
-        
-        /* Prank Screen */
-        .prank-screen {
-            display: none;
-            flex-direction: column;
+        /* Phase 1: Initial Loading */
+        .phase {
             min-height: 100vh;
-            background: #fff;
-        }
-        
-        .system-header {
-            background: #f8f9fa;
-            padding: 20px;
-            border-bottom: 1px solid #dee2e6;
-            text-align: center;
-        }
-        
-        .system-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
-            animation: spin 3s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .system-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .system-subtitle {
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .permissions-list {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
-        .permission-item {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 15px;
-            animation: slideIn 0.5s ease-out forwards;
+            justify-content: center;
+            padding: 40px 20px;
             opacity: 0;
+            transition: opacity 0.8s ease;
         }
         
-        @keyframes slideIn {
-            from {
-                transform: translateX(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .phase.active {
+            opacity: 1;
         }
         
-        .permission-icon {
-            font-size: 30px;
-            min-width: 40px;
-        }
-        
-        .permission-content {
-            flex: 1;
-            text-align: left;
-        }
-        
-        .permission-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .permission-desc {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
-        }
-        
-        .permission-toggle {
-            width: 50px;
-            height: 28px;
-            background: #4CAF50;
-            border-radius: 14px;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .permission-toggle::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            right: 2px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .button-container {
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-        }
-        
-        .accept-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s;
-        }
-        
-        .accept-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .loading-screen {
+        .phase.hidden {
             display: none;
-            flex-direction: column;
+        }
+        
+        /* Phase 1: System Boot */
+        #phase1 {
+            background: #000;
+        }
+        
+        .boot-sequence {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .boot-line {
+            color: #00ff00;
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0;
+            animation: fadeInLine 0.3s forwards;
+        }
+        
+        @keyframes fadeInLine {
+            to { opacity: 1; }
+        }
+        
+        .boot-line.error {
+            color: #ff3333;
+        }
+        
+        .boot-line.warning {
+            color: #ffaa00;
+        }
+        
+        /* Phase 2: Verification */
+        #phase2 {
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
+        }
+        
+        .verification-container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .system-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border: 3px solid #00ff00;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: #fff;
-            text-align: center;
-            padding: 30px;
+            font-size: 36px;
+            color: #00ff00;
+            animation: pulse 2s infinite;
         }
         
-        .loading-icon {
-            font-size: 80px;
-            animation: bounce 1s infinite;
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.8); }
         }
         
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .loading-text {
+        .verification-title {
             font-size: 24px;
-            font-weight: 700;
-            color: #333;
-            margin-top: 20px;
+            color: #00ff00;
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
         }
         
-        .loading-subtitle {
-            font-size: 16px;
+        .verification-text {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
             color: #666;
-            margin-top: 10px;
+            margin-bottom: 10px;
         }
         
         .progress-bar {
             width: 100%;
-            max-width: 300px;
-            height: 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            margin-top: 30px;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
             overflow: hidden;
+            position: relative;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, #00ff00, #00aa00);
             width: 0%;
-            animation: progress 3s ease-out forwards;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
         
-        @keyframes progress {
-            to { width: 100%; }
-        }
-        
-        .reveal-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .status-message {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #00ff00;
             text-align: center;
+        }
+        
+        /* Phase 3: Warning */
+        #phase3 {
+            background: #000;
+        }
+        
+        .warning-container {
+            max-width: 700px;
+            text-align: center;
+        }
+        
+        .warning-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: warningBlink 1s infinite;
+        }
+        
+        @keyframes warningBlink {
+            0%, 50% { opacity: 1; color: #ff3333; }
+            51%, 100% { opacity: 0.3; color: #ff6666; }
+        }
+        
+        .warning-title {
+            font-size: 32px;
+            color: #ff3333;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .warning-box {
+            background: rgba(255, 51, 51, 0.1);
+            border: 2px solid #ff3333;
             padding: 30px;
+            margin: 30px 0;
+            text-align: left;
         }
         
-        .reveal-icon {
-            font-size: 100px;
-            animation: pop 0.5s ease-out;
+        .warning-item {
+            color: #ffaa00;
+            font-size: 14px;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
         }
         
-        @keyframes pop {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        .warning-item::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #ff3333;
+        }
+        
+        .critical-text {
+            font-size: 16px;
+            color: #ff3333;
+            margin-top: 30px;
+            animation: blink 0.8s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Phase 4: Final Authorization */
+        #phase4 {
+            background: radial-gradient(circle at center, #0f1419 0%, #000 100%);
+        }
+        
+        .auth-container {
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .auth-spinner {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 40px;
+            border: 4px solid #1a1a1a;
+            border-top: 4px solid #00ff00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .auth-title {
+            font-size: 18px;
+            color: #00ff00;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        
+        .auth-details {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .auth-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .auth-label {
+            color: #666;
+        }
+        
+        .auth-value {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        /* Phase 5: REVEAL */
+        #phase5 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .reveal-container {
+            max-width: 700px;
+            text-align: center;
+            animation: zoomIn 0.5s ease-out;
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .reveal-emoji {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: bounce 0.6s ease-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-20px); }
+            50% { transform: translateY(0); }
+            75% { transform: translateY(-10px); }
         }
         
         .reveal-title {
-            font-size: 32px;
+            font-family: 'Inter', sans-serif;
+            font-size: 48px;
             font-weight: 700;
-            color: white;
-            margin-top: 20px;
-            margin-bottom: 15px;
+            color: #fff;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
         }
         
         .reveal-text {
-            font-size: 18px;
-            color: rgba(255,255,255,0.9);
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.95);
             line-height: 1.6;
-            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .reveal-subtext {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-top: 30px;
         }
         
         .restart-btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: white;
+            margin-top: 40px;
+            padding: 18px 50px;
+            background: #fff;
             color: #667eea;
             border: none;
-            border-radius: 25px;
-            font-size: 16px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .restart-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* No Refresh Warning */
+        .no-refresh {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 51, 51, 0.95);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            animation: shake 0.5s;
+        }
+        
+        .no-refresh.show {
+            display: block;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            25% { transform: translateX(-50%) translateY(-5px); }
+            75% { transform: translateX(-50%) translateY(5px); }
         }
     </style>
 </head>
 <body>
-    <!-- QR Code Section -->
-    <div class="qr-container" id="qr-section">
-        <div class="qr-card">
-            <div class="qr-title">🎯 Scan to Win!</div>
-            <div class="qr-subtitle">Free Gift Inside - Limited Time!</div>
-            <div id="qrcode"></div>
-            <div class="instructions">
-                <strong>⚠️ Prank Setup:</strong><br>
-                Show this QR code to your friends and tell them they can win a prize by scanning it!
+    <!-- No Refresh Warning -->
+    <div class="no-refresh" id="refreshWarning">⚠️ DO NOT REFRESH - SESSION LOCK IN PROGRESS</div>
+    
+    <!-- Phase 1: Boot Sequence -->
+    <div class="phase active" id="phase1">
+        <div class="boot-sequence" id="bootLines"></div>
+    </div>
+    
+    <!-- Phase 2: Verification -->
+    <div class="phase" id="phase2">
+        <div class="verification-container">
+            <div class="system-logo">⬢</div>
+            <div class="verification-title">Initializing Secure Protocol</div>
+            <div class="verification-text">
+                DEVICE FINGERPRINT ANALYSIS<br>
+                CROSS-REFERENCING IDENTITY MARKERS<br>
+                ESTABLISHING ENCRYPTED CHANNEL
             </div>
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>VERIFICATION</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+            </div>
+            <div class="status-message" id="statusMsg">Analyzing device signature...</div>
         </div>
     </div>
     
-    <!-- Prank Permission Screen -->
-    <div class="prank-screen" id="prank-section">
-        <div class="system-header">
-            <div class="system-icon">⚙️</div>
-            <div class="system-title">System Update Required</div>
-            <div class="system-subtitle">Please grant the following permissions to continue</div>
-        </div>
-        
-        <div class="permissions-list">
-            <div class="permission-item" style="animation-delay: 0s;">
-                <div class="permission-icon">📸</div>
-                <div class="permission-content">
-                    <div class="permission-title">Access All Photos & Videos</div>
-                    <div class="permission-desc">Including deleted items from the last 5 years</div>
-                </div>
-                <div class="permission-toggle"></div>
+    <!-- Phase 3: Warning -->
+    <div class="phase" id="phase3">
+        <div class="warning-container">
+            <div class="warning-icon">⚠</div>
+            <div class="warning-title">Restricted Access</div>
+            <div class="warning-box">
+                <div class="warning-item">Primary Control Layer access detected</div>
+                <div class="warning-item">Global Node synchronization active</div>
+                <div class="warning-item">Clearance level verified: OMEGA-7</div>
+                <div class="warning-item">Connection to Central Intelligence Grid established</div>
+                <div class="warning-item">Session encryption: AES-512 | Quantum-resistant</div>
             </div>
-            
-            <div class="permission-item" style="animation-delay: 0.1s;">
-                <div class="permission-icon">📱</div>
-                <div class="permission-content">
-                    <div class="permission-title">Read All Text Messages</div>
-                    <div class="permission-desc">Access to SMS, WhatsApp, and social media DMs</div>
-                </div>
-                <div class="permission-toggle"></div>
+            <div class="verification-text" style="margin-top: 30px;">
+                You are accessing a restricted layer of the network.<br>
+                All activity is monitored and logged.<br>
+                Unauthorized access may result in immediate investigation.
             </div>
-            
-            <div class="permission-item" style="animation-delay: 0.2s;">
-                <div class="permission-icon">📞</div>
-                <div class="permission-content">
-                    <div class="permission-title">Call History & Contacts</div>
-                    <div class="permission-desc">View and modify all contacts and call logs</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-            
-            <div class="permission-item" style="animation-delay: 0.3s;">
-                <div class="permission-icon">📍</div>
-                <div class="permission-content">
-                    <div class="permission-title">Location Tracking 24/7</div>
-                    <div class="permission-desc">Real-time GPS monitoring even when app is closed</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-            
-            <div class="permission-item" style="animation-delay: 0.4s;">
-                <div class="permission-icon">🎤</div>
-                <div class="permission-content">
-                    <div class="permission-title">Microphone Always On</div>
-                    <div class="permission-desc">Record audio at any time without notification</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-            
-            <div class="permission-item" style="animation-delay: 0.5s;">
-                <div class="permission-icon">💳</div>
-                <div class="permission-content">
-                    <div class="permission-title">Banking & Payment Info</div>
-                    <div class="permission-desc">Access to all saved payment methods and transactions</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-            
-            <div class="permission-item" style="animation-delay: 0.6s;">
-                <div class="permission-icon">🔐</div>
-                <div class="permission-content">
-                    <div class="permission-title">Password Manager Access</div>
-                    <div class="permission-desc">View and export all saved passwords</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-            
-            <div class="permission-item" style="animation-delay: 0.7s;">
-                <div class="permission-icon">👥</div>
-                <div class="permission-content">
-                    <div class="permission-title">Social Media Full Control</div>
-                    <div class="permission-desc">Post, message, and modify settings on your behalf</div>
-                </div>
-                <div class="permission-toggle"></div>
-            </div>
-        </div>
-        
-        <div class="button-container">
-            <button class="accept-btn" onclick="acceptPermissions()">ACCEPT ALL & CONTINUE</button>
+            <div class="critical-text">● PROCEEDING TO AUTHORIZATION</div>
         </div>
     </div>
     
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loading-section">
-        <div class="loading-icon">🔄</div>
-        <div class="loading-text">Installing...</div>
-        <div class="loading-subtitle">Please wait while we access your data</div>
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
+    <!-- Phase 4: Final Authorization -->
+    <div class="phase" id="phase4">
+        <div class="auth-container">
+            <div class="auth-spinner"></div>
+            <div class="auth-title">FINALIZING AUTHORIZATION</div>
+            <div class="auth-details">
+                <div class="auth-row">
+                    <span class="auth-label">Session ID:</span>
+                    <span class="auth-value" id="sessionId"></span>
+                </div>
+                <div class="auth-row">
+                    <span class="auth-label">Authorization Level:</span>
+                    <span class="auth-value">CONFIRMED</span>
+                </div>
+                <div class="auth-row">
+                    <span class="auth-label">Network Node:</span>
+                    <span class="auth-value">GLB-PRIME-07</span>
+                </div>
+                <div class="auth-row">
+                    <span class="auth-label">Encryption Status:</span>
+                    <span class="auth-value">ACTIVE</span>
+                </div>
+                <div class="auth-row">
+                    <span class="auth-label">Access Granted:</span>
+                    <span class="auth-value" id="timestamp"></span>
+                </div>
+            </div>
+            <div class="status-message">Establishing secure connection to primary server...</div>
         </div>
     </div>
     
-    <!-- Reveal Screen -->
-    <div class="reveal-screen" id="reveal-section">
-        <div class="reveal-icon">😂</div>
-        <div class="reveal-title">YOU'VE BEEN PRANKED!</div>
-        <div class="reveal-text">
-            Don't worry! We didn't access anything. This was just a harmless prank.<br><br>
-            Always be careful about what permissions you grant to apps and websites! 🔒
+    <!-- Phase 5: REVEAL -->
+    <div class="phase" id="phase5">
+        <div class="reveal-container">
+            <div class="reveal-emoji">😂</div>
+            <div class="reveal-title">LMAOOO YOU ACTUALLY FELL FOR IT</div>
+            <div class="reveal-text">
+                There is no "classified system" 💀<br>
+                No government database 💀<br>
+                No global control grid 💀
+            </div>
+            <div class="reveal-subtext">
+                It was all fake! Just a harmless prank to see how long you'd keep watching. 
+                But hey, props for making it this far without refreshing 😅
+                <br><br>
+                <strong>Pro tip:</strong> Maybe don't scan random QR codes next time? 
+                You never know what you're actually accessing 🤷‍♂️
+            </div>
+            <button class="restart-btn" onclick="restart()">Prank Someone Else 😈</button>
         </div>
-        <button class="restart-btn" onclick="restart()">Prank Someone Else</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
-        const currentUrl = window.location.href;
-        const prankUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'prank=true';
+        let currentPhase = 1;
         
-        // Check if URL has prank parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const isPrank = urlParams.get('prank');
+        // Prevent refresh warning
+        let showRefreshWarning = false;
+        window.addEventListener('beforeunload', (e) => {
+            if (showRefreshWarning && currentPhase >= 2 && currentPhase <= 4) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
         
-        if (isPrank === 'true') {
-            // Show prank screen
-            document.getElementById('qr-section').style.display = 'none';
-            document.getElementById('prank-section').style.display = 'flex';
-        } else {
-            // Generate QR code
-            window.addEventListener('load', function() {
-                const qrcodeDiv = document.getElementById('qrcode');
-                if (qrcodeDiv && typeof QRCode !== 'undefined') {
-                    new QRCode(qrcodeDiv, {
-                        text: prankUrl,
-                        width: 200,
-                        height: 200,
-                        colorDark: '#667eea',
-                        colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                }
+        // Show warning on refresh attempt
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'F5' || (e.ctrlKey && e.key === 'r')) && currentPhase >= 2 && currentPhase <= 4) {
+                e.preventDefault();
+                const warning = document.getElementById('refreshWarning');
+                warning.classList.add('show');
+                setTimeout(() => warning.classList.remove('show'), 2000);
+            }
+        });
+        
+        // Phase 1: Boot Sequence
+        const bootMessages = [
+            'Initializing system...',
+            'Loading security modules... OK',
+            'Establishing network connection... OK',
+            'Verifying device fingerprint...',
+            'Device ID: ' + generateRandomHex(16),
+            'IP Address logged: ' + generateFakeIP(),
+            'Geolocation: ACQUIRED',
+            'Browser signature: MATCHED',
+            'Cross-checking identity markers...',
+            'WARNING: Restricted access attempt detected',
+            'Running authentication protocol...',
+            'Authorization level: PENDING',
+            'Connecting to primary server...',
+            'Handshake complete. Session established.',
+            'Proceeding to verification phase...'
+        ];
+        
+        function generateRandomHex(length) {
+            return Array.from({length}, () => 
+                Math.floor(Math.random() * 16).toString(16)
+            ).join('').toUpperCase();
+        }
+        
+        function generateFakeIP() {
+            return Array.from({length: 4}, () => 
+                Math.floor(Math.random() * 256)
+            ).join('.');
+        }
+        
+        function startBootSequence() {
+            const container = document.getElementById('bootLines');
+            let delay = 0;
+            
+            bootMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = 'boot-line';
+                    if (msg.includes('WARNING')) line.classList.add('warning');
+                    line.textContent = '> ' + msg;
+                    container.appendChild(line);
+                    
+                    // Scroll to bottom
+                    window.scrollTo(0, document.body.scrollHeight);
+                    
+                    // Move to phase 2 after last message
+                    if (index === bootMessages.length - 1) {
+                        setTimeout(() => goToPhase(2), 1500);
+                    }
+                }, delay);
+                
+                delay += index < 5 ? 200 : index < 10 ? 300 : 400;
             });
         }
         
-        function acceptPermissions() {
-            // Hide permission screen
-            document.getElementById('prank-section').style.display = 'none';
+        // Phase 2: Verification with progress
+        function startVerification() {
+            showRefreshWarning = true;
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progress-percent');
+            const statusMsg = document.getElementById('statusMsg');
             
-            // Show loading screen
-            document.getElementById('loading-section').style.display = 'flex';
+            const statuses = [
+                'Analyzing device signature...',
+                'Checking security certificates...',
+                'Validating authentication tokens...',
+                'Cross-referencing database entries...',
+                'Establishing secure tunnel...',
+                'Verification complete. Access granted.'
+            ];
             
-            // After 3 seconds, show reveal
-            setTimeout(() => {
-                document.getElementById('loading-section').style.display = 'none';
-                document.getElementById('reveal-section').style.display = 'flex';
-            }, 3000);
+            let progress = 0;
+            let statusIndex = 0;
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = progress + '%';
+                progressPercent.textContent = Math.floor(progress) + '%';
+                
+                // Change status message
+                if (progress > (statusIndex + 1) * 16.67 && statusIndex < statuses.length - 1) {
+                    statusIndex++;
+                    statusMsg.textContent = statuses[statusIndex];
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => goToPhase(3), 1500);
+                }
+            }, 300);
         }
         
-        function restart() {
-            // Remove prank parameter and reload
-            window.location.href = currentUrl.split('?')[0];
+        // Phase transitions
+        function goToPhase(phase) {
+            // Hide current phase
+            document.querySelectorAll('.phase').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            // Show new phase
+            setTimeout(() => {
+                document.querySelectorAll('.phase').forEach(p => {
+                    if (p.id === 'phase' + currentPhase) {
+                        p.classList.add('hidden');
+                    }
+                });
+                
+                currentPhase = phase;
+                const nextPhase = document.getElementById('phase' + phase);
+                nextPhase.classList.remove('hidden');
+                nextPhase.classList.add('active');
+                
+                // Start phase-specific actions
+                if (phase === 2) startVerification();
+                if (phase === 3) setTimeout(() => goToPhase(4), 5000);
+                if (phase === 4) startFinalAuth();
+                if (phase === 5) showRefreshWarning = false;
+            }, 800);
         }
+        
+        // Phase 4: Final Authorization
+        function startFinalAuth() {
+            document.getElementById('sessionId').textContent = generateRandomHex(32);
+            document.getElementById('timestamp').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            
+            setTimeout(() => goToPhase(5), 4000);
+        }
+        
+        // Restart
+        function restart() {
+            window.location.reload();
+        }
+        
+        // Start the sequence
+        window.addEventListener('load', () => {
+            setTimeout(startBootSequence, 500);
+        });
     </script>
 </body>
 </html>
