@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>System Update Required</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        .qr-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .qr-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .qr-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .qr-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #856404;
+            text-align: left;
+        }
+        
+        /* Prank Screen */
+        .prank-screen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #fff;
+        }
+        
+        .system-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .system-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .system-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .system-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .permissions-list {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .permission-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .permission-icon {
+            font-size: 30px;
+            min-width: 40px;
+        }
+        
+        .permission-content {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .permission-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .permission-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .permission-toggle {
+            width: 50px;
+            height: 28px;
+            background: #4CAF50;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .permission-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .button-container {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .accept-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .accept-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .loading-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #fff;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loading-icon {
+            font-size: 80px;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .loading-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-top: 20px;
+        }
+        
+        .loading-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            max-width: 300px;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            animation: progress 3s ease-out forwards;
+        }
+        
+        @keyframes progress {
+            to { width: 100%; }
+        }
+        
+        .reveal-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .reveal-icon {
+            font-size: 100px;
+            animation: pop 0.5s ease-out;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .reveal-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .reveal-text {
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.6;
+            max-width: 400px;
+        }
+        
+        .restart-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- QR Code Section -->
+    <div class="qr-container" id="qr-section">
+        <div class="qr-card">
+            <div class="qr-title">🎯 Scan to Win!</div>
+            <div class="qr-subtitle">Free Gift Inside - Limited Time!</div>
+            <div id="qrcode"></div>
+            <div class="instructions">
+                <strong>⚠️ Prank Setup:</strong><br>
+                Show this QR code to your friends and tell them they can win a prize by scanning it!
+            </div>
+        </div>
+    </div>
+    
+    <!-- Prank Permission Screen -->
+    <div class="prank-screen" id="prank-section">
+        <div class="system-header">
+            <div class="system-icon">⚙️</div>
+            <div class="system-title">System Update Required</div>
+            <div class="system-subtitle">Please grant the following permissions to continue</div>
+        </div>
+        
+        <div class="permissions-list">
+            <div class="permission-item" style="animation-delay: 0s;">
+                <div class="permission-icon">📸</div>
+                <div class="permission-content">
+                    <div class="permission-title">Access All Photos & Videos</div>
+                    <div class="permission-desc">Including deleted items from the last 5 years</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.1s;">
+                <div class="permission-icon">📱</div>
+                <div class="permission-content">
+                    <div class="permission-title">Read All Text Messages</div>
+                    <div class="permission-desc">Access to SMS, WhatsApp, and social media DMs</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.2s;">
+                <div class="permission-icon">📞</div>
+                <div class="permission-content">
+                    <div class="permission-title">Call History & Contacts</div>
+                    <div class="permission-desc">View and modify all contacts and call logs</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.3s;">
+                <div class="permission-icon">📍</div>
+                <div class="permission-content">
+                    <div class="permission-title">Location Tracking 24/7</div>
+                    <div class="permission-desc">Real-time GPS monitoring even when app is closed</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.4s;">
+                <div class="permission-icon">🎤</div>
+                <div class="permission-content">
+                    <div class="permission-title">Microphone Always On</div>
+                    <div class="permission-desc">Record audio at any time without notification</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.5s;">
+                <div class="permission-icon">💳</div>
+                <div class="permission-content">
+                    <div class="permission-title">Banking & Payment Info</div>
+                    <div class="permission-desc">Access to all saved payment methods and transactions</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.6s;">
+                <div class="permission-icon">🔐</div>
+                <div class="permission-content">
+                    <div class="permission-title">Password Manager Access</div>
+                    <div class="permission-desc">View and export all saved passwords</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+            
+            <div class="permission-item" style="animation-delay: 0.7s;">
+                <div class="permission-icon">👥</div>
+                <div class="permission-content">
+                    <div class="permission-title">Social Media Full Control</div>
+                    <div class="permission-desc">Post, message, and modify settings on your behalf</div>
+                </div>
+                <div class="permission-toggle"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="accept-btn" onclick="acceptPermissions()">ACCEPT ALL & CONTINUE</button>
+        </div>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-section">
+        <div class="loading-icon">🔄</div>
+        <div class="loading-text">Installing...</div>
+        <div class="loading-subtitle">Please wait while we access your data</div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+    
+    <!-- Reveal Screen -->
+    <div class="reveal-screen" id="reveal-section">
+        <div class="reveal-icon">😂</div>
+        <div class="reveal-title">YOU'VE BEEN PRANKED!</div>
+        <div class="reveal-text">
+            Don't worry! We didn't access anything. This was just a harmless prank.<br><br>
+            Always be careful about what permissions you grant to apps and websites! 🔒
+        </div>
+        <button class="restart-btn" onclick="restart()">Prank Someone Else</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const currentUrl = window.location.href;
+        const prankUrl = currentUrl + (currentUrl.includes('?') ? '&' : '?') + 'prank=true';
+        
+        // Check if URL has prank parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const isPrank = urlParams.get('prank');
+        
+        if (isPrank === 'true') {
+            // Show prank screen
+            document.getElementById('qr-section').style.display = 'none';
+            document.getElementById('prank-section').style.display = 'flex';
+        } else {
+            // Generate QR code
+            window.addEventListener('load', function() {
+                const qrcodeDiv = document.getElementById('qrcode');
+                if (qrcodeDiv && typeof QRCode !== 'undefined') {
+                    new QRCode(qrcodeDiv, {
+                        text: prankUrl,
+                        width: 200,
+                        height: 200,
+                        colorDark: '#667eea',
+                        colorLight: '#ffffff',
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            });
+        }
+        
+        function acceptPermissions() {
+            // Hide permission screen
+            document.getElementById('prank-section').style.display = 'none';
+            
+            // Show loading screen
+            document.getElementById('loading-section').style.display = 'flex';
+            
+            // After 3 seconds, show reveal
+            setTimeout(() => {
+                document.getElementById('loading-section').style.display = 'none';
+                document.getElementById('reveal-section').style.display = 'flex';
+            }, 3000);
+        }
+        
+        function restart() {
+            // Remove prank parameter and reload
+            window.location.href = currentUrl.split('?')[0];
+        }
+    </script>
+</body>
+</html>
