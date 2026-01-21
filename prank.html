@@ -1,651 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECURE ACCESS PROTOCOL</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;700&display=swap');
-        
-        body {
-            font-family: 'Share Tech Mono', 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            overflow-x: hidden;
-            cursor: default;
-        }
-        
-        /* Phase 1: Initial Loading */
-        .phase {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-        
-        .phase.active {
-            opacity: 1;
-        }
-        
-        .phase.hidden {
-            display: none;
-        }
-        
-        /* Phase 1: System Boot */
-        #phase1 {
-            background: #000;
-        }
-        
-        .boot-sequence {
-            width: 100%;
-            max-width: 800px;
-        }
-        
-        .boot-line {
-            color: #00ff00;
-            font-size: 14px;
-            margin-bottom: 8px;
-            opacity: 0;
-            animation: fadeInLine 0.3s forwards;
-        }
-        
-        @keyframes fadeInLine {
-            to { opacity: 1; }
-        }
-        
-        .boot-line.error {
-            color: #ff3333;
-        }
-        
-        .boot-line.warning {
-            color: #ffaa00;
-        }
-        
-        /* Phase 2: Verification */
-        #phase2 {
-            background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
-        }
-        
-        .verification-container {
-            text-align: center;
-            max-width: 600px;
-        }
-        
-        .system-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            border: 3px solid #00ff00;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            color: #00ff00;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); }
-            50% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.8); }
-        }
-        
-        .verification-title {
-            font-size: 24px;
-            color: #00ff00;
-            margin-bottom: 20px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        
-        .verification-text {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 40px;
-            line-height: 1.8;
-        }
-        
-        .progress-container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #1a1a1a;
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ff00, #00aa00);
-            width: 0%;
-            transition: width 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-        }
-        
-        .status-message {
-            margin-top: 30px;
-            font-size: 13px;
-            color: #00ff00;
-            text-align: center;
-        }
-        
-        /* Phase 3: Warning */
-        #phase3 {
-            background: #000;
-        }
-        
-        .warning-container {
-            max-width: 700px;
-            text-align: center;
-        }
-        
-        .warning-icon {
-            font-size: 80px;
-            margin-bottom: 30px;
-            animation: warningBlink 1s infinite;
-        }
-        
-        @keyframes warningBlink {
-            0%, 50% { opacity: 1; color: #ff3333; }
-            51%, 100% { opacity: 0.3; color: #ff6666; }
-        }
-        
-        .warning-title {
-            font-size: 32px;
-            color: #ff3333;
-            margin-bottom: 20px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        
-        .warning-box {
-            background: rgba(255, 51, 51, 0.1);
-            border: 2px solid #ff3333;
-            padding: 30px;
-            margin: 30px 0;
-            text-align: left;
-        }
-        
-        .warning-item {
-            color: #ffaa00;
-            font-size: 14px;
-            margin-bottom: 15px;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .warning-item::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: #ff3333;
-        }
-        
-        .critical-text {
-            font-size: 16px;
-            color: #ff3333;
-            margin-top: 30px;
-            animation: blink 0.8s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        
-        /* Phase 4: Final Authorization */
-        #phase4 {
-            background: radial-gradient(circle at center, #0f1419 0%, #000 100%);
-        }
-        
-        .auth-container {
-            max-width: 600px;
-            text-align: center;
-        }
-        
-        .auth-spinner {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 40px;
-            border: 4px solid #1a1a1a;
-            border-top: 4px solid #00ff00;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .auth-title {
-            font-size: 18px;
-            color: #00ff00;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-        }
-        
-        .auth-details {
-            background: rgba(0, 255, 0, 0.05);
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: left;
-        }
-        
-        .auth-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        
-        .auth-label {
-            color: #666;
-        }
-        
-        .auth-value {
-            color: #00ff00;
-            font-weight: bold;
-        }
-        
-        /* Phase 5: REVEAL */
-        #phase5 {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .reveal-container {
-            max-width: 700px;
-            text-align: center;
-            animation: zoomIn 0.5s ease-out;
-        }
-        
-        @keyframes zoomIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .reveal-emoji {
-            font-size: 120px;
-            margin-bottom: 30px;
-            animation: bounce 0.6s ease-out;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            25% { transform: translateY(-20px); }
-            50% { transform: translateY(0); }
-            75% { transform: translateY(-10px); }
-        }
-        
-        .reveal-title {
-            font-family: 'Inter', sans-serif;
-            font-size: 48px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 25px;
-            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .reveal-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 22px;
-            color: rgba(255, 255, 255, 0.95);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .reveal-subtext {
-            font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.8;
-            margin-top: 30px;
-        }
-        
-        .restart-btn {
-            margin-top: 40px;
-            padding: 18px 50px;
-            background: #fff;
-            color: #667eea;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s;
-        }
-        
-        .restart-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        .restart-btn:active {
-            transform: translateY(-1px);
-        }
-        
-        /* No Refresh Warning */
-        .no-refresh {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 51, 51, 0.95);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            z-index: 1000;
-            display: none;
-            animation: shake 0.5s;
-        }
-        
-        .no-refresh.show {
-            display: block;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            25% { transform: translateX(-50%) translateY(-5px); }
-            75% { transform: translateX(-50%) translateY(5px); }
-        }
-    </style>
-</head>
-<body>
-    <!-- No Refresh Warning -->
-    <div class="no-refresh" id="refreshWarning">⚠️ DO NOT REFRESH - SESSION LOCK IN PROGRESS</div>
-    
-    <!-- Phase 1: Boot Sequence -->
-    <div class="phase active" id="phase1">
-        <div class="boot-sequence" id="bootLines"></div>
-    </div>
-    
-    <!-- Phase 2: Verification -->
-    <div class="phase" id="phase2">
-        <div class="verification-container">
-            <div class="system-logo">⬢</div>
-            <div class="verification-title">Initializing Secure Protocol</div>
-            <div class="verification-text">
-                DEVICE FINGERPRINT ANALYSIS<br>
-                CROSS-REFERENCING IDENTITY MARKERS<br>
-                ESTABLISHING ENCRYPTED CHANNEL
-            </div>
-            <div class="progress-container">
-                <div class="progress-label">
-                    <span>VERIFICATION</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar"></div>
-                </div>
-            </div>
-            <div class="status-message" id="statusMsg">Analyzing device signature...</div>
-        </div>
-    </div>
-    
-    <!-- Phase 3: Warning -->
-    <div class="phase" id="phase3">
-        <div class="warning-container">
-            <div class="warning-icon">⚠</div>
-            <div class="warning-title">Restricted Access</div>
-            <div class="warning-box">
-                <div class="warning-item">Primary Control Layer access detected</div>
-                <div class="warning-item">Global Node synchronization active</div>
-                <div class="warning-item">Clearance level verified: OMEGA-7</div>
-                <div class="warning-item">Connection to Central Intelligence Grid established</div>
-                <div class="warning-item">Session encryption: AES-512 | Quantum-resistant</div>
-            </div>
-            <div class="verification-text" style="margin-top: 30px;">
-                You are accessing a restricted layer of the network.<br>
-                All activity is monitored and logged.<br>
-                Unauthorized access may result in immediate investigation.
-            </div>
-            <div class="critical-text">● PROCEEDING TO AUTHORIZATION</div>
-        </div>
-    </div>
-    
-    <!-- Phase 4: Final Authorization -->
-    <div class="phase" id="phase4">
-        <div class="auth-container">
-            <div class="auth-spinner"></div>
-            <div class="auth-title">FINALIZING AUTHORIZATION</div>
-            <div class="auth-details">
-                <div class="auth-row">
-                    <span class="auth-label">Session ID:</span>
-                    <span class="auth-value" id="sessionId"></span>
-                </div>
-                <div class="auth-row">
-                    <span class="auth-label">Authorization Level:</span>
-                    <span class="auth-value">CONFIRMED</span>
-                </div>
-                <div class="auth-row">
-                    <span class="auth-label">Network Node:</span>
-                    <span class="auth-value">GLB-PRIME-07</span>
-                </div>
-                <div class="auth-row">
-                    <span class="auth-label">Encryption Status:</span>
-                    <span class="auth-value">ACTIVE</span>
-                </div>
-                <div class="auth-row">
-                    <span class="auth-label">Access Granted:</span>
-                    <span class="auth-value" id="timestamp"></span>
-                </div>
-            </div>
-            <div class="status-message">Establishing secure connection to primary server...</div>
-        </div>
-    </div>
-    
-    <!-- Phase 5: REVEAL -->
-    <div class="phase" id="phase5">
-        <div class="reveal-container">
-            <div class="reveal-emoji">😂</div>
-            <div class="reveal-title">LMAOOO YOU ACTUALLY FELL FOR IT</div>
-            <div class="reveal-text">
-                There is no "classified system" 💀<br>
-                No government database 💀<br>
-                No global control grid 💀
-            </div>
-            <div class="reveal-subtext">
-                It was all fake! Just a harmless prank to see how long you'd keep watching. 
-                But hey, props for making it this far without refreshing 😅
-                <br><br>
-                <strong>Pro tip:</strong> Maybe don't scan random QR codes next time? 
-                You never know what you're actually accessing 🤷‍♂️
-            </div>
-            <button class="restart-btn" onclick="restart()">Prank Someone Else 😈</button>
-        </div>
-    </div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Access Protocol</title>
 
-    <script>
-        let currentPhase = 1;
-        
-        // Prevent refresh warning
-        let showRefreshWarning = false;
-        window.addEventListener('beforeunload', (e) => {
-            if (showRefreshWarning && currentPhase >= 2 && currentPhase <= 4) {
-                e.preventDefault();
-                e.returnValue = '';
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Share Tech Mono', monospace;
+    background: #000;
+    color: #e0e0e0;
+    overflow-x: hidden;
+}
+
+.phase {
+    min-height: 100vh;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.phase.active {
+    display: flex;
+}
+
+/* ---------- PHASE 1 ---------- */
+.boot-sequence {
+    width: 100%;
+    max-width: 800px;
+}
+
+.boot-line {
+    color: #00ff00;
+    font-size: 14px;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* ---------- PHASE 2 ---------- */
+#phase2 {
+    background: radial-gradient(circle, #111 0%, #000 100%);
+    text-align: center;
+}
+
+.progress-bar {
+    width: 400px;
+    height: 5px;
+    background: #222;
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ff00, #00aa00);
+}
+
+/* ---------- PHASE 3 ---------- */
+#phase3 {
+    background: #000;
+    text-align: center;
+}
+
+.warning {
+    color: #ff3333;
+    font-size: 28px;
+}
+
+/* ---------- PHASE 4 ---------- */
+#phase4 {
+    background: radial-gradient(circle, #111 0%, #000 100%);
+    text-align: center;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 4px solid #222;
+    border-top: 4px solid #00ff00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 30px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- PHASE 5 (REVEAL) ---------- */
+#phase5 {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.reveal-emoji {
+    font-size: 110px;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.reveal-title {
+    font-size: 42px;
+    margin: 20px 0;
+}
+
+.reveal-text {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.reveal-subtext {
+    font-size: 18px;
+    opacity: 0.9;
+    line-height: 1.7;
+}
+
+button {
+    margin-top: 40px;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PHASE 1 -->
+<div class="phase active" id="phase1">
+    <div class="boot-sequence" id="boot"></div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase" id="phase2">
+    <div>
+        <h2>Initializing Secure Protocol</h2>
+        <div class="progress-bar">
+            <div class="progress-fill" id="bar"></div>
+        </div>
+        <p id="percent">0%</p>
+    </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase" id="phase3">
+    <div>
+        <h2 class="warning">Restricted Layer Detected</h2>
+        <p>Monitoring connection...</p>
+    </div>
+</div>
+
+<!-- PHASE 4 -->
+<div class="phase" id="phase4">
+    <div>
+        <div class="spinner"></div>
+        <p>Finalizing authorization...</p>
+    </div>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase" id="phase5">
+    <div>
+        <div class="reveal-emoji">🎭</div>
+        <div class="reveal-title">CONGRATULATIONS</div>
+        <div class="reveal-text">
+            You just completed a <strong>Curiosity & Attention Test</strong>
+        </div>
+        <div class="reveal-subtext">
+            No hacking.<br>
+            No tracking.<br>
+            No secret system.<br><br>
+
+            You stayed curious, trusted the process, and kept watching.
+            <br><br>
+            <strong>Result:</strong><br>
+            You are officially too curious for your own good 😄
+        </div>
+
+        <button onclick="location.reload()">Prank Someone Else 😈</button>
+    </div>
+</div>
+
+<script>
+let phase = 1;
+
+const bootLines = [
+    "Initializing system...",
+    "Loading modules...",
+    "Verifying device fingerprint...",
+    "Establishing secure tunnel...",
+    "Session created.",
+    "Proceeding..."
+];
+
+function nextPhase(n) {
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+    document.getElementById('phase' + n).classList.add('active');
+    phase = n;
+}
+
+function startBoot() {
+    const boot = document.getElementById('boot');
+    bootLines.forEach((line, i) => {
+        setTimeout(() => {
+            const d = document.createElement('div');
+            d.className = 'boot-line';
+            d.textContent = '> ' + line;
+            boot.appendChild(d);
+            if (i === bootLines.length - 1) {
+                setTimeout(() => nextPhase(2), 1000);
             }
-        });
-        
-        // Show warning on refresh attempt
-        document.addEventListener('keydown', (e) => {
-            if ((e.key === 'F5' || (e.ctrlKey && e.key === 'r')) && currentPhase >= 2 && currentPhase <= 4) {
-                e.preventDefault();
-                const warning = document.getElementById('refreshWarning');
-                warning.classList.add('show');
-                setTimeout(() => warning.classList.remove('show'), 2000);
-            }
-        });
-        
-        // Phase 1: Boot Sequence
-        const bootMessages = [
-            'Initializing system...',
-            'Loading security modules... OK',
-            'Establishing network connection... OK',
-            'Verifying device fingerprint...',
-            'Device ID: ' + generateRandomHex(16),
-            'IP Address logged: ' + generateFakeIP(),
-            'Geolocation: ACQUIRED',
-            'Browser signature: MATCHED',
-            'Cross-checking identity markers...',
-            'WARNING: Restricted access attempt detected',
-            'Running authentication protocol...',
-            'Authorization level: PENDING',
-            'Connecting to primary server...',
-            'Handshake complete. Session established.',
-            'Proceeding to verification phase...'
-        ];
-        
-        function generateRandomHex(length) {
-            return Array.from({length}, () => 
-                Math.floor(Math.random() * 16).toString(16)
-            ).join('').toUpperCase();
+        }, i * 300);
+    });
+}
+
+function startProgress() {
+    let p = 0;
+    const bar = document.getElementById('bar');
+    const percent = document.getElementById('percent');
+    const interval = setInterval(() => {
+        p += Math.random() * 15;
+        if (p >= 100) {
+            p = 100;
+            clearInterval(interval);
+            setTimeout(() => nextPhase(3), 1000);
         }
-        
-        function generateFakeIP() {
-            return Array.from({length: 4}, () => 
-                Math.floor(Math.random() * 256)
-            ).join('.');
-        }
-        
-        function startBootSequence() {
-            const container = document.getElementById('bootLines');
-            let delay = 0;
-            
-            bootMessages.forEach((msg, index) => {
-                setTimeout(() => {
-                    const line = document.createElement('div');
-                    line.className = 'boot-line';
-                    if (msg.includes('WARNING')) line.classList.add('warning');
-                    line.textContent = '> ' + msg;
-                    container.appendChild(line);
-                    
-                    // Scroll to bottom
-                    window.scrollTo(0, document.body.scrollHeight);
-                    
-                    // Move to phase 2 after last message
-                    if (index === bootMessages.length - 1) {
-                        setTimeout(() => goToPhase(2), 1500);
-                    }
-                }, delay);
-                
-                delay += index < 5 ? 200 : index < 10 ? 300 : 400;
-            });
-        }
-        
-        // Phase 2: Verification with progress
-        function startVerification() {
-            showRefreshWarning = true;
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progress-percent');
-            const statusMsg = document.getElementById('statusMsg');
-            
-            const statuses = [
-                'Analyzing device signature...',
-                'Checking security certificates...',
-                'Validating authentication tokens...',
-                'Cross-referencing database entries...',
-                'Establishing secure tunnel...',
-                'Verification complete. Access granted.'
-            ];
-            
-            let progress = 0;
-            let statusIndex = 0;
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 100) progress = 100;
-                
-                progressBar.style.width = progress + '%';
-                progressPercent.textContent = Math.floor(progress) + '%';
-                
-                // Change status message
-                if (progress > (statusIndex + 1) * 16.67 && statusIndex < statuses.length - 1) {
-                    statusIndex++;
-                    statusMsg.textContent = statuses[statusIndex];
-                }
-                
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => goToPhase(3), 1500);
-                }
-            }, 300);
-        }
-        
-        // Phase transitions
-        function goToPhase(phase) {
-            // Hide current phase
-            document.querySelectorAll('.phase').forEach(p => {
-                p.classList.remove('active');
-            });
-            
-            // Show new phase
-            setTimeout(() => {
-                document.querySelectorAll('.phase').forEach(p => {
-                    if (p.id === 'phase' + currentPhase) {
-                        p.classList.add('hidden');
-                    }
-                });
-                
-                currentPhase = phase;
-                const nextPhase = document.getElementById('phase' + phase);
-                nextPhase.classList.remove('hidden');
-                nextPhase.classList.add('active');
-                
-                // Start phase-specific actions
-                if (phase === 2) startVerification();
-                if (phase === 3) setTimeout(() => goToPhase(4), 5000);
-                if (phase === 4) startFinalAuth();
-                if (phase === 5) showRefreshWarning = false;
-            }, 800);
-        }
-        
-        // Phase 4: Final Authorization
-        function startFinalAuth() {
-            document.getElementById('sessionId').textContent = generateRandomHex(32);
-            document.getElementById('timestamp').textContent = new Date().toISOString().slice(0, 19).replace('T', ' ');
-            
-            setTimeout(() => goToPhase(5), 4000);
-        }
-        
-        // Restart
-        function restart() {
-            window.location.reload();
-        }
-        
-        // Start the sequence
-        window.addEventListener('load', () => {
-            setTimeout(startBootSequence, 500);
-        });
-    </script>
+        bar.style.width = p + '%';
+        percent.textContent = Math.floor(p) + '%';
+    }, 300);
+}
+
+window.onload = () => {
+    startBoot();
+};
+
+setTimeout(() => {
+    if (phase === 2) startProgress();
+}, 4000);
+
+setTimeout(() => {
+    if (phase === 3) nextPhase(4);
+}, 9000);
+
+setTimeout(() => {
+    if (phase === 4) nextPhase(5);
+}, 13000);
+</script>
+
 </body>
 </html>
